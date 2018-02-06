@@ -25,3 +25,22 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext.versions = [
+        androidSupport: "27.0.2",
+        constraintLayout: "1.0.2",
+        retrofit: "2.3.0",
+        okHttp: "3.8.0",
+]
+ext.support = [
+        appcompat7: "com.android.support:appcompat-v7:$versions.androidSupport",
+        design: "com.android.support:design:$versions.androidSupport",
+        recyclerview: "com.android.support:recyclerview-v7:$versions.androidSupport",
+        constraintLayout: "com.android.support.constraint:constraint-layout:$versions.constraintLayout"
+]
+ext.squareup = [
+        retrofit2: "com.squareup.retrofit2:retrofit:$versions.retrofit",
+        converterGson: "com.squareup.retrofit2:converter-gson:$versions.retrofit",
+        okHttp: "com.squareup.okhttp3:okhttp:$versions.okHttp",
+        loginInterceptor: "com.squareup.okhttp3:logging-interceptor:$versions.okHttp"
+]
