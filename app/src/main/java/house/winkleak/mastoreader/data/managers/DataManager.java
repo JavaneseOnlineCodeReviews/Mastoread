@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import house.winkleak.mastoreader.data.network.PicassoCache;
@@ -25,6 +26,7 @@ import retrofit2.Call;
         private RestService mRestService;
         private Picasso mPicasso;
         private Context mContext;
+        private List<Status> mStatusList;
 
 
 
@@ -32,6 +34,7 @@ import retrofit2.Call;
         this.mContext = MastoReadApplication.getContext();
         this.mRestService = ServiceGenerator.createService(RestService.class);
         this.mPicasso = new PicassoCache(mContext).getPicassoInstance();
+        this.mStatusList = new ArrayList<>();
     }
 
     public static DataManager getInstance() {
@@ -47,5 +50,15 @@ import retrofit2.Call;
 
     public Call<List<Status>> getTimelinesPublic(){
         return mRestService.getTimelinePublic();
+    }
+
+    public List<Status> getStatusList() {
+        return mStatusList;
+    }
+
+    public void setStatusList(List<Status> statusList) {
+        mStatusList.clear();
+        mStatusList.addAll(statusList);
+
     }
 }

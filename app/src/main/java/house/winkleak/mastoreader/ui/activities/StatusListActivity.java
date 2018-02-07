@@ -1,19 +1,17 @@
 package house.winkleak.mastoreader.ui.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import house.winkleak.mastoreader.R;
+import house.winkleak.mastoreader.data.network.OnDownloadCompleteListener;
 import house.winkleak.mastoreader.ui.fragments.StatusListFragment;
 
-public class StatusListActivity extends AppCompatActivity {
-
+public class StatusListActivity extends AppCompatActivity implements OnDownloadCompleteListener {
+    public static final String STATUS_LIST_FRAGMENT = "status_list_fragment";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +21,10 @@ public class StatusListActivity extends AppCompatActivity {
 
         if(findViewById(R.id.fragment_container) != null){
             StatusListFragment listFragment = StatusListFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, listFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
+                    listFragment,
+                    STATUS_LIST_FRAGMENT)
+                    .commit();
         }
 
     }
@@ -48,5 +49,13 @@ public class StatusListActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDownloaded() {
+        StatusListFragment fragment = (StatusListFragment) getSupportFragmentManager().findFragmentByTag(STATUS_LIST_FRAGMENT);
+        if(fragment!= null){
+            fragment.updateAdapter();
+        }
     }
 }

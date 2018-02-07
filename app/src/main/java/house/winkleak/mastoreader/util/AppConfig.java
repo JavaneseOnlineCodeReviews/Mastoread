@@ -7,6 +7,7 @@ package house.winkleak.mastoreader.util;
 
 public interface AppConfig {
 
+
     //NETWORK
 
         String VERSION_API = "v1";

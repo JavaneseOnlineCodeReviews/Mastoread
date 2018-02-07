@@ -19,29 +19,29 @@ import java.util.List;
 import house.winkleak.mastoreader.R;
 import house.winkleak.mastoreader.data.managers.DataManager;
 import house.winkleak.mastoreader.data.network.response.Status;
+import house.winkleak.mastoreader.util.RelativeTimeConverter;
 
 public class StatusListAdapter extends RecyclerView.Adapter<StatusListAdapter.ViewHolder> {
-    private static final String TAG = "StatusListAdapter";
     private List<Status> mStatusList;
+    private OnStatusCardClickListener mStatusCardClickListener;
 
-    public StatusListAdapter(List<Status> statusList) {
+    public StatusListAdapter(List<Status> statusList, OnStatusCardClickListener statusCardClickListener) {
         this.mStatusList = statusList;
+        this.mStatusCardClickListener = statusCardClickListener;
     }
 
     @Override
     public StatusListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status_list, parent, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, mStatusCardClickListener);
     }
 
     @Override
     public void onBindViewHolder(StatusListAdapter.ViewHolder holder, int position) {
         Status status = mStatusList.get(position);
 
-
-        String relativeTime = getRelativeTime(status.getCreatedAt());
-
+        String relativeTime = RelativeTimeConverter.getRelativeTime(status.getCreatedAt());
 
         DataManager.getInstance().getPicasso()
                 .load(status.getAccount().getAvatar())
@@ -53,44 +53,40 @@ public class StatusListAdapter extends RecyclerView.Adapter<StatusListAdapter.Vi
         holder.nickname.setText(String.format("@%s", status.getAccount().getUsername()));
         holder.createdAt.setText(relativeTime);
         String text = Html.fromHtml(status.getContent()).toString();
-        holder.statusText.setText(text);
+        holder.content.setText(text);
     }
 
-    private String getRelativeTime(String createdAt) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        try {
-            Date date1 = sdf.parse(createdAt);
-            long time = date1.getTime();
-            Time now = new Time();
-            now.setToNow();
-            Log.d(TAG, "time = " + time);
 
-            return DateUtils.getRelativeTimeSpanString(time,
-                    now.toMillis(true),
-                    DateUtils.SECOND_IN_MILLIS).toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return createdAt;
-    }
 
     @Override
     public int getItemCount() {
         return mStatusList.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView avatar;
-        TextView name, nickname, createdAt, statusText;
+        TextView name, nickname, createdAt, content;
+        OnStatusCardClickListener mStatusCardClickListener;
 
-         ViewHolder(View itemView) {
+         ViewHolder(View itemView, OnStatusCardClickListener statusCardClickListener) {
             super(itemView);
             avatar = itemView.findViewById(R.id.avatar);
-            name = itemView.findViewById(R.id.account_name);
+            name = itemView.findViewById(R.id.dysplay_name);
             nickname = itemView.findViewById(R.id.account_nickname);
             createdAt = itemView.findViewById(R.id.created_at);
-            statusText = itemView.findViewById(R.id.status_text);
+            content = itemView.findViewById(R.id.status_text);
+            mStatusCardClickListener = statusCardClickListener;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            mStatusCardClickListener.onStatusCardClick(getAdapterPosition());
+        }
+    }
+    public interface OnStatusCardClickListener{
+        void onStatusCardClick(int position);
+
     }
 
 }

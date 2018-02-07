@@ -83,6 +83,13 @@ public class Status {
     public List<MediaAttachment> getMediaAttachments() {
         return mediaAttachments;
     }
+    public List<String> getImageUrls(List<MediaAttachment> atachments){
+        List<String> imageUrls = new ArrayList<>();
+        for(MediaAttachment atachment : atachments){
+            imageUrls.add(atachment.getUrl());
+        }
+        return imageUrls;
+    }
 
     public class Account {
 
@@ -173,7 +180,7 @@ public class Status {
         private Object description;
 
 
-        public String getUrl() {
+        String getUrl() {
             return url;
         }
 
