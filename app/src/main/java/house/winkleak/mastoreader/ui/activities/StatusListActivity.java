@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import house.winkleak.mastoreader.R;
+import house.winkleak.mastoreader.ui.fragments.StatusListFragment;
 
 public class StatusListActivity extends AppCompatActivity {
 
@@ -19,6 +20,11 @@ public class StatusListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_status_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if(findViewById(R.id.fragment_container) != null){
+            StatusListFragment listFragment = StatusListFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, listFragment).commit();
+        }
 
     }
 

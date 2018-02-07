@@ -54,7 +54,7 @@ public class Status {
     private Object application;
     @SerializedName("account")
     @Expose
-    public Account account;
+    private Account account;
     @SerializedName("media_attachments")
     @Expose
     private List<MediaAttachment> mediaAttachments = new ArrayList<>();
@@ -70,6 +70,14 @@ public class Status {
 
     public String getCreatedAt() {
         return createdAt;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public List<MediaAttachment> getMediaAttachments() {
@@ -128,8 +136,8 @@ public class Status {
             return username;
         }
 
-        public String getAcct() {
-            return acct;
+        public String getDisplayName() {
+            return displayName;
         }
 
         public String getAvatar() {

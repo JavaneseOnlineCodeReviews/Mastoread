@@ -25,6 +25,7 @@ dependencies {
     implementation support.appcompat7
     implementation support.design
     implementation support.constraintLayout
+    implementation support.cardView
 
     //retrofit
     implementation(squareup.retrofit2) {
