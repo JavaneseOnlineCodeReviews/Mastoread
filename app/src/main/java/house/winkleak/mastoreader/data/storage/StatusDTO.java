@@ -72,4 +72,28 @@ public class StatusDTO implements Parcelable {
             return new StatusDTO[size];
         }
     };
+
+    public String getAvatarUrl() {
+        return mAvatarUrl;
     }
+
+    public String getName() {
+        return mName;
+    }
+
+    public String getNickname() {
+        return mNickname;
+    }
+
+    public String getCreatedAt() {
+        return mCreatedAt;
+    }
+
+    public String getContent() {
+        return mContent;
+    }
+
+    public List<String> getContentMediaUrls() {
+        return contentMediaUrls;
+    }
+}
