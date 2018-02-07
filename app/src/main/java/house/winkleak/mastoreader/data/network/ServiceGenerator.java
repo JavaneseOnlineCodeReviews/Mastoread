@@ -3,6 +3,8 @@ package house.winkleak.mastoreader.data.network;
 import java.util.concurrent.TimeUnit;
 
 import house.winkleak.mastoreader.util.AppConfig;
+import house.winkleak.mastoreader.util.MastoReadApplication;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -25,6 +27,7 @@ public class ServiceGenerator {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         httpClient.addInterceptor(logging);
+        httpClient.cache(new Cache(MastoReadApplication.getContext().getCacheDir(), Integer.MAX_VALUE));
         httpClient.connectTimeout(AppConfig.MAX_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
         httpClient.readTimeout(AppConfig.MAX_READ_TIMEOUT, TimeUnit.MILLISECONDS);
         Retrofit retrofit = sBuilder

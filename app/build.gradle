@@ -27,6 +27,10 @@ dependencies {
     implementation support.constraintLayout
     implementation support.cardView
 
+    //picasso
+    implementation squareup.picasso
+    implementation jakewharton.picassoOkhttpDownloader
+
     //retrofit
     implementation(squareup.retrofit2) {
         exclude module: 'okhttp'
