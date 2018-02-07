@@ -33,7 +33,6 @@ public class DetailStatusActivity extends AppCompatActivity {
 
         setStatusData();
 
-
     }
     private void setStatusData(){
         DataManager.getInstance().getPicasso()
@@ -46,7 +45,6 @@ public class DetailStatusActivity extends AppCompatActivity {
             String contentImgUrl = mStatusDTO.getContentMediaUrls().get(0);
             DataManager.getInstance().getPicasso()
                     .load(contentImgUrl)
-                    .fit()
                     .into(mContentImg);
         }
 

@@ -2,22 +2,28 @@ package house.winkleak.mastoreader.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import house.winkleak.mastoreader.R;
+import house.winkleak.mastoreader.data.managers.DataManager;
 import house.winkleak.mastoreader.data.network.OnDownloadCompleteListener;
+import house.winkleak.mastoreader.data.network.StatusListFetcher;
 import house.winkleak.mastoreader.ui.fragments.StatusListFragment;
 
 public class StatusListActivity extends AppCompatActivity implements OnDownloadCompleteListener {
     public static final String STATUS_LIST_FRAGMENT = "status_list_fragment";
+    private DataManager mDataManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mDataManager = DataManager.getInstance();
 
         if(findViewById(R.id.fragment_container) != null){
             StatusListFragment listFragment = StatusListFragment.newInstance();
@@ -33,6 +39,26 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_status_list, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView()  ;
+        searchView.setQueryHint(getString(R.string.hint_search));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mDataManager.getPreferencesManager().saveSearchTag(query);
+                StatusListFetcher.fetchStatusList(StatusListActivity.this);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                   if(query.isEmpty() || query.equals("")){
+                       mDataManager.getPreferencesManager().saveSearchTag(query);
+                   }
+
+                return false;
+            }
+        });
         return true;
     }
 
@@ -44,7 +70,8 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            StatusListFetcher.fetchStatusList(StatusListActivity.this);
             return true;
         }
 

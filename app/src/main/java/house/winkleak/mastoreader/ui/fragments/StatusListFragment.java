@@ -60,7 +60,7 @@ public class StatusListFragment extends Fragment implements StatusListAdapter.On
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mStatusListAdapter = new StatusListAdapter(mStatusList, this);
         mRecyclerView.setAdapter(mStatusListAdapter);
-        StatusListFetcher.fetchRecentPublic(mDownloadCompleteListener);
+        StatusListFetcher.fetchStatusList(mDownloadCompleteListener);
 
         return view;
     }

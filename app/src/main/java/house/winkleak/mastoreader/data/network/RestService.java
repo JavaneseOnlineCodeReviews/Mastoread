@@ -15,7 +15,7 @@ import retrofit2.http.Path;
 
 public interface RestService {
 
-@GET("timelines/tag/[tag]")
+@GET("timelines/tag/{tag}")
     Call<List<Status>> getTimelineByTag(@Path("tag") String tag);
 
 @GET("timelines/public/")

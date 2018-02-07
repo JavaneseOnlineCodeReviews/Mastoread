@@ -26,11 +26,13 @@ import retrofit2.Call;
         private RestService mRestService;
         private Picasso mPicasso;
         private Context mContext;
+        private OwnPreferenceManager mPreferenceManager;
         private List<Status> mStatusList;
 
 
 
     private DataManager(){
+        this.mPreferenceManager = new OwnPreferenceManager();
         this.mContext = MastoReadApplication.getContext();
         this.mRestService = ServiceGenerator.createService(RestService.class);
         this.mPicasso = new PicassoCache(mContext).getPicassoInstance();
@@ -44,12 +46,20 @@ import retrofit2.Call;
         return INSTANCE;
     }
 
+    public OwnPreferenceManager getPreferencesManager() {
+        return mPreferenceManager;
+    }
+
     public Picasso getPicasso() {
         return mPicasso;
     }
 
-    public Call<List<Status>> getTimelinesPublic(){
+    public Call<List<Status>> getPublicStatuses(){
         return mRestService.getTimelinePublic();
+    }
+
+    public Call<List<Status>> getStatusesByTag(String tag){
+        return mRestService.getTimelineByTag(tag);
     }
 
     public List<Status> getStatusList() {

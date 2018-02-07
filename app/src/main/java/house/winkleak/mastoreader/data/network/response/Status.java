@@ -83,6 +83,7 @@ public class Status {
     public List<MediaAttachment> getMediaAttachments() {
         return mediaAttachments;
     }
+
     public List<String> getImageUrls(List<MediaAttachment> atachments){
         List<String> imageUrls = new ArrayList<>();
         for(MediaAttachment atachment : atachments){
