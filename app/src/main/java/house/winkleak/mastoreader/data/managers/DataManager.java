@@ -46,6 +46,10 @@ import retrofit2.Call;
         return INSTANCE;
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     public OwnPreferenceManager getPreferencesManager() {
         return mPreferenceManager;
     }

@@ -1,6 +1,8 @@
 package house.winkleak.mastoreader.ui.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -16,12 +18,14 @@ import house.winkleak.mastoreader.ui.fragments.StatusListFragment;
 public class StatusListActivity extends AppCompatActivity implements OnDownloadCompleteListener {
     public static final String STATUS_LIST_FRAGMENT = "status_list_fragment";
     private DataManager mDataManager;
+    private CoordinatorLayout mCoordinatorLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mCoordinatorLayout = findViewById(R.id.coordinator);
 
         mDataManager = DataManager.getInstance();
 
@@ -84,5 +88,11 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
         if(fragment!= null){
             fragment.updateAdapter();
         }
+    }
+
+    @Override
+    public void onDownloadFailed(String error) {
+            Snackbar.make(mCoordinatorLayout, error, Snackbar.LENGTH_LONG).show();
+
     }
 }
