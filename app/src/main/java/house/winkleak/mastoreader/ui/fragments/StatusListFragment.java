@@ -2,10 +2,10 @@ package house.winkleak.mastoreader.ui.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import house.winkleak.mastoreader.R;
 import house.winkleak.mastoreader.data.managers.DataManager;
-import house.winkleak.mastoreader.data.network.OnDownloadCompleteListener;
+import house.winkleak.mastoreader.data.network.OnDownloadListener;
 import house.winkleak.mastoreader.data.network.StatusListFetcher;
 import house.winkleak.mastoreader.data.network.response.Status;
 import house.winkleak.mastoreader.data.storage.StatusDTO;
@@ -26,31 +26,29 @@ import house.winkleak.mastoreader.util.ConstantManager;
 
 public class StatusListFragment extends Fragment implements StatusListAdapter.OnStatusCardClickListener {
 
-    private DataManager mDataManager;
     private List<Status> mStatusList;
     private RecyclerView mRecyclerView;
     private StatusListAdapter mStatusListAdapter;
-    private OnDownloadCompleteListener mDownloadCompleteListener;
+    private OnDownloadListener mDownloadCompleteListener;
     public StatusListFragment() {
     }
     public static StatusListFragment newInstance(){
         return new StatusListFragment();
     }
-
+    //Берем список статусов если они были ранее загружены из DataManager
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDataManager = DataManager.getInstance();
-        mStatusList = mDataManager.getStatusList();
-
+        mStatusList = DataManager.getInstance().getStatusList();
     }
-
+//Получаем экземпляр активити чтобы передать в качестве листенера загрузки данных из сети
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mDownloadCompleteListener = (OnDownloadCompleteListener)  context;
-    }
+        mDownloadCompleteListener = (OnDownloadListener)  context;
 
+    }
+//иницаилизируем Views, если список статусов пустой просим класс StatusListFetcher его получить из сети
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,7 +67,7 @@ public class StatusListFragment extends Fragment implements StatusListAdapter.On
 
         return view;
     }
-
+// срабатывает при нажатии на элемент списка, после чего упаковываем статус в объект StatusDTO и передаем в DetailActivity
     @Override
     public void onStatusCardClick(int position) {
         StatusDTO statusDto = new StatusDTO(mStatusList.get(position));
@@ -77,6 +75,8 @@ public class StatusListFragment extends Fragment implements StatusListAdapter.On
         detailStatusIntent.putExtra(ConstantManager.DETAIL_STATUS_ACTIVITY_INTENT ,statusDto);
         startActivity(detailStatusIntent);
     }
+
+    // вызывается из активити в случае если данные обновились и необходимо обновить адаптер
     public void updateAdapter(){
         mStatusListAdapter.notifyDataSetChanged();
     }

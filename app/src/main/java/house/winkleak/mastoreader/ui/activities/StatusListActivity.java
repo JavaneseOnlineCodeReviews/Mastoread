@@ -3,22 +3,27 @@ package house.winkleak.mastoreader.ui.activities;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import house.winkleak.mastoreader.R;
 import house.winkleak.mastoreader.data.managers.DataManager;
-import house.winkleak.mastoreader.data.network.OnDownloadCompleteListener;
+import house.winkleak.mastoreader.data.network.OnDownloadListener;
 import house.winkleak.mastoreader.data.network.StatusListFetcher;
 import house.winkleak.mastoreader.ui.fragments.StatusListFragment;
+import house.winkleak.mastoreader.util.ConstantManager;
 
-public class StatusListActivity extends AppCompatActivity implements OnDownloadCompleteListener {
+public class StatusListActivity extends AppCompatActivity implements OnDownloadListener {
+
     public static final String STATUS_LIST_FRAGMENT = "status_list_fragment";
     private DataManager mDataManager;
     private CoordinatorLayout mCoordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,20 +33,22 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
         mCoordinatorLayout = findViewById(R.id.coordinator);
 
         mDataManager = DataManager.getInstance();
-
+        //Если фрагмент не существует, создаем новый
         if(findViewById(R.id.fragment_container) != null){
-            StatusListFragment listFragment = StatusListFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
-                    listFragment,
-                    STATUS_LIST_FRAGMENT)
-                    .commit();
-        }
+            if(getSupportFragmentManager().findFragmentByTag(STATUS_LIST_FRAGMENT)==null) {
+                StatusListFragment listFragment = StatusListFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
+                        listFragment,
+                        STATUS_LIST_FRAGMENT)
+                        .commit();
 
+            }
+        }
     }
 
+// Заполняет меню элементами, помещает их в ActionBar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_status_list, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) menuItem.getActionView()  ;
@@ -56,7 +63,7 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
 
             @Override
             public boolean onQueryTextChange(String query) {
-                   if(query.isEmpty() || query.equals("")){
+                   if(query.isEmpty()){
                        mDataManager.getPreferencesManager().saveSearchTag(query);
                    }
 
@@ -65,15 +72,11 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
         });
         return true;
     }
-
+// срабатывает при клике на любой элемент меню
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        int id = item.getItemId();
         if (id == R.id.action_refresh) {
             StatusListFetcher.fetchStatusList(StatusListActivity.this);
             return true;
@@ -81,7 +84,7 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
 
         return super.onOptionsItemSelected(item);
     }
-
+//колбэк срабатывает при удачной загрузке данных из сети, находит фрагмент, и заставляет обновить данные адаптера
     @Override
     public void onDownloaded() {
         StatusListFragment fragment = (StatusListFragment) getSupportFragmentManager().findFragmentByTag(STATUS_LIST_FRAGMENT);
@@ -89,7 +92,7 @@ public class StatusListActivity extends AppCompatActivity implements OnDownloadC
             fragment.updateAdapter();
         }
     }
-
+//срабатывает при неудачной попытке загрузки данных из сети
     @Override
     public void onDownloadFailed(String error) {
             Snackbar.make(mCoordinatorLayout, error, Snackbar.LENGTH_LONG).show();

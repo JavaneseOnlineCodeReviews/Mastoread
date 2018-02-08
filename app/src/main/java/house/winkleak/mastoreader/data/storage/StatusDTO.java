@@ -15,7 +15,7 @@ public class StatusDTO implements Parcelable {
     private String mNickname;
     private String mCreatedAt;
     private String mContent;
-    private List<String> contentMediaUrls;
+    private List<String> mContentMediaUrls;
 
     public StatusDTO(Status status) {
         this.mAvatarUrl = status.getAccount().getAvatar();
@@ -23,7 +23,7 @@ public class StatusDTO implements Parcelable {
         this.mNickname = status.getAccount().getUsername();
         this.mCreatedAt = status.getCreatedAt();
         this.mContent = status.getContent();
-        this.contentMediaUrls = status.getImageUrls(status.getMediaAttachments());
+        this.mContentMediaUrls = status.getImageUrls(status.getMediaAttachments());
     }
 
     protected StatusDTO(Parcel in) {
@@ -33,10 +33,10 @@ public class StatusDTO implements Parcelable {
         mCreatedAt = in.readString();
         mContent = in.readString();
         if (in.readByte() == 0x01) {
-            contentMediaUrls = new ArrayList<>();
-            in.readList(contentMediaUrls, String.class.getClassLoader());
+            mContentMediaUrls = new ArrayList<>();
+            in.readList(mContentMediaUrls, String.class.getClassLoader());
         } else {
-            contentMediaUrls = null;
+            mContentMediaUrls = null;
         }
     }
 
@@ -52,11 +52,11 @@ public class StatusDTO implements Parcelable {
         dest.writeString(mNickname);
         dest.writeString(mCreatedAt);
         dest.writeString(mContent);
-        if (contentMediaUrls == null) {
+        if (mContentMediaUrls == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(contentMediaUrls);
+            dest.writeList(mContentMediaUrls);
         }
     }
 
@@ -94,6 +94,6 @@ public class StatusDTO implements Parcelable {
     }
 
     public List<String> getContentMediaUrls() {
-        return contentMediaUrls;
+        return mContentMediaUrls;
     }
 }

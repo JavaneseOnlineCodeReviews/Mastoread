@@ -34,6 +34,7 @@ public class DetailStatusActivity extends AppCompatActivity {
         setStatusData();
 
     }
+    //загружаем данные в View из StatusDTO, если есть вложенная картинка, загружаем и ее
     private void setStatusData(){
         DataManager.getInstance().getPicasso()
                 .load(mStatusDTO.getAvatarUrl())

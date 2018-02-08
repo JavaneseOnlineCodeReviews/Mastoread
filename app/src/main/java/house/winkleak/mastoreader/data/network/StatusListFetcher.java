@@ -16,7 +16,7 @@ public class StatusListFetcher {
     /**
      * Выбирает каким методом пользоваться, в зависимости от того пустой ли тэг
      */
-    public static void fetchStatusList(final OnDownloadCompleteListener downloadCompleteListener){
+    public static void fetchStatusList(final OnDownloadListener downloadCompleteListener){
         if(!NetworkStatusChecker.isNetworkAvalible(DataManager.getInstance().getContext())){
             downloadCompleteListener.onDownloadFailed("Загрузка невозможно, проверьте интернет соединение");
         }
@@ -34,7 +34,7 @@ public class StatusListFetcher {
      * Обращается к сети с помощью Datamanager
      * и пытается получить последние добавленные публичные статусы
      */
-    private static void fetchRecentPublic(final OnDownloadCompleteListener downloadCompleteListener) {
+    private static void fetchRecentPublic(final OnDownloadListener downloadCompleteListener) {
         Call<List<Status>> call = DataManager.getInstance().getPublicStatuses();
         call.enqueue(new Callback<List<Status>>() {
             @Override
@@ -58,7 +58,7 @@ public class StatusListFetcher {
      * Обращается к сети с помощью Datamanager
      * и пытается получить статусы по тегу
      */
-    private static void fetchStatusesByTeg(final OnDownloadCompleteListener downloadCompleteListener, String tag) {
+    private static void fetchStatusesByTeg(final OnDownloadListener downloadCompleteListener, String tag) {
         Call<List<Status>> call = DataManager.getInstance().getStatusesByTag(tag);
         call.enqueue(new Callback<List<Status>>() {
             @Override
